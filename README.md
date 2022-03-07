@@ -13,8 +13,8 @@ throttling.
 ## Details
 
 ```mermaid
-graph TD;
-    root key --> KEK
+graph TD
+    rk[root key] --> KEK
     KEK --> DEK_1
     KEK --> DEK_2
     KEK --> DEK_n
