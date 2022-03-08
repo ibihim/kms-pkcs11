@@ -73,7 +73,7 @@ if err != nil {
 }
 
 // encryptedData and not cipher text as it contains encrypted DEK
-encryptedData, err := keyChain.Encrypt([]byte(plaintext), []byte)
+encryptedData, err := keyChain.Encrypt([]byte(plaintext))
 if err != nil {
   return err
 }
