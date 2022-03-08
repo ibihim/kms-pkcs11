@@ -58,13 +58,9 @@ func (k *KeyChain) Decrypt(encryptedData, additionalData []byte) ([]byte, error)
 		return nil, err
 	}
 
-	prefix := ct[:cryptofmt.NonRawPrefixSize]
-	dek, ok := k.deks[string(prefix)]
-	if !ok {
-		dek, err = k.decryptDEK(encDec)
-		if err != nil {
-			return nil, fmt.Errorf("can't find nor decrypt DEK: %w", err)
-		}
+	dek, err := k.getDEK(ct[:cryptofmt.NonRawPrefixSize], encDec)
+	if err != nil {
+		return nil, err
 	}
 
 	return decryptPlaintext(dek, ct, additionalData)
@@ -82,4 +78,20 @@ func decryptPlaintext(dek *keyset.Handle, ciphertext, additionalData []byte) ([]
 	}
 
 	return plaintext, nil
+}
+
+func (k *KeyChain) getDEK(prefix, encryptedDEK []byte) (*keyset.Handle, error) {
+	dek, ok := k.deks[string(prefix)]
+	if ok {
+		return dek, nil
+	}
+
+	dek, err := k.decryptDEK(encryptedDEK)
+	if err != nil {
+		return nil, fmt.Errorf("can't find nor decrypt DEK: %w", err)
+	}
+
+	k.deks[string(prefix)] = dek
+
+	return dek, nil
 }

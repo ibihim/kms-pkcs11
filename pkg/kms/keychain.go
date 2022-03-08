@@ -6,9 +6,11 @@ import (
 
 	"github.com/google/tink/go/aead"
 	"github.com/google/tink/go/keyset"
+	"github.com/google/tink/go/tink"
 )
 
 type KeyChain struct {
+	// TODO put counter into AAD so no tinkering on it.
 	counter   uint32
 	rotateMtx sync.Mutex
 
@@ -16,7 +18,7 @@ type KeyChain struct {
 	deks map[string]*keyset.Handle
 }
 
-func New(_ io.Writer) (*KeyChain, error) {
+func New() (*KeyChain, error) {
 	kek, err := keyset.NewHandle(aead.AES128GCMKeyTemplate())
 	if err != nil {
 		return nil, err
@@ -30,27 +32,33 @@ func New(_ io.Writer) (*KeyChain, error) {
 	}, nil
 }
 
-func (k *KeyChain) Read(rootKey []byte) error {
-
+func Read(r io.Reader, rootKey tink.AEAD) error {
+	/* TODO */
 	return nil
 }
 
-func (k *KeyChain) Write(w io.Writer, rootKey []byte) error {
-	/*
-		var encK EncryptedKeyChain
+func (k *KeyChain) Write(w io.Writer, rootKey tink.AEAD) error {
+	/* TODO */
+	return nil
+}
 
-		a, err := aead.New(k.kek)
-		if err != nil {
-			return err
-		}
+func ReadKEK(r io.Reader, rootKey tink.AEAD) (*keyset.Handle, error) {
+	br := keyset.NewBinaryReader(r)
 
-		for k, v := range k.deks {
-			var buf bytes.Buffer
+	kek, err := keyset.Read(br, rootKey)
+	if err != nil {
+		return nil, err
+	}
 
-			var buf bytes.Buffer
-			v.Write(keyset.NewBinaryWriter(buf), k.kek)
-		}
-	*/
+	return kek, nil
+}
+
+func (k *KeyChain) WriteKEK(w io.Writer, rootKey tink.AEAD) error {
+	bw := keyset.NewBinaryWriter(w)
+
+	if err := k.kek.Write(bw, rootKey); err != nil {
+		return err
+	}
 
 	return nil
 }

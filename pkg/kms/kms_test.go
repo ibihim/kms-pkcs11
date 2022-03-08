@@ -15,6 +15,9 @@ func identityKeyChain(kc *kms.KeyChain, err error) func() (*kms.KeyChain, error)
 	return func() (*kms.KeyChain, error) { return kc, err }
 }
 
+// TestTODOCounter without running 2^21 + 1 encryptions.
+func TestTODOCounter(t *testing.T) {}
+
 func TestKEK(t *testing.T) {
 	for _, tt := range []struct {
 		name          string
@@ -24,21 +27,21 @@ func TestKEK(t *testing.T) {
 	}{
 		{
 			name:          "should be able to encrypt and decrypt without authenticated additional data",
-			keyChain:      identityKeyChain(kms.New(nil)),
+			keyChain:      identityKeyChain(kms.New()),
 			aad:           identityBytes([]byte("")),
 			expectedError: false,
 		},
 
 		{
 			name:          "should be able to encrypt and decrypt with authenticated additional data",
-			keyChain:      identityKeyChain(kms.New(nil)),
+			keyChain:      identityKeyChain(kms.New()),
 			aad:           identityBytes([]byte("kek lives only in memory, beware")),
 			expectedError: false,
 		},
 
 		{
 			name:     "should not be able to decrypt without proper authenticated additional data",
-			keyChain: identityKeyChain(kms.New(nil)),
+			keyChain: identityKeyChain(kms.New()),
 			aad: func() func() []byte {
 				var called bool
 
@@ -62,11 +65,11 @@ func TestKEK(t *testing.T) {
 			keyChain: func() func() (*kms.KeyChain, error) {
 				var called bool
 
-				encryptionKey, err := kms.New(nil)
+				encryptionKey, err := kms.New()
 				if err != nil {
 					return func() (*kms.KeyChain, error) { return nil, err }
 				}
-				decryptionKey, err := kms.New(nil)
+				decryptionKey, err := kms.New()
 				if err != nil {
 					return func() (*kms.KeyChain, error) { return nil, err }
 				}
