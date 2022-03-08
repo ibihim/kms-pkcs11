@@ -12,6 +12,15 @@ throttling.
 
 ## Details
 
+### Naming
+
+- **root key** is an external key that encrypts the key chain
+- **key chain** is the combination of the **KEK** and a cache of **DEKs**
+- **KEK** is a set of keys with one set as primary.
+- **DEK** is a key used once for encryption of data.
+- **ciphertext** is data that got encrypted.
+- **encrypted data** is the ciphertext and the DEK.
+
 ### Key Hierarchy
 
 ```mermaid
