@@ -45,8 +45,8 @@ The encrypted data is a [gob](https://pkg.go.dev/encoding/gob) encoded like so:
 
 ```Go
 type EncryptedData struct {
-	Ciphertext   []byte
-	EncryptedDEK []byte
+  Ciphertext   []byte
+  EncryptedDEK []byte
 }
 ```
 
@@ -64,5 +64,44 @@ The KEK rotates when necessary automatically to keep the data safe.
   [the key size would be cut in half](https://en.wikipedia.org/wiki/Grover%27s_algorithm#Cryptography).
 ## Usage
 
+Start anew:
+
 ```Go
+keyChain, err := kms.New()
+if err != nil {
+  return err
+}
+
+// encryptedData and not cipher text as it contains encrypted DEK
+encryptedData, err := keyChain.Encrypt([]byte(plaintext), []byte)
+if err != nil {
+  return err
+}
+
+plainTextAsBytes, err := keyChain.Decrypt(encryptedData)
+if err != nil {
+  return err
+}
+
+if !bytes.Equal([]byte(plaintext), plainTextAsBytes) {
+  panic(errors.New("PRs are welcome!"))
+}
+```
+
+Start from `io.Reader`:
+
+```Go
+// TODO
+```
+
+Start from `external_kms`:
+
+```Go
+// TODO
+```
+
+Start from `hms`:
+
+```Go
+// TODO
 ```
