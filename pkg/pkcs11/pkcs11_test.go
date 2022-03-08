@@ -1,14 +1,15 @@
-package main
+package pkcs11
 
 import (
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"testing"
 
 	"github.com/miekg/pkcs11"
 )
 
-func pkcs11test() error {
+func TestPKCS11(t *testing.T) {
 	p := pkcs11.New("/usr/local/lib/softhsm/libsofthsm2.so")
 	if err := p.Initialize(); err != nil {
 		panic(err)
@@ -21,19 +22,19 @@ func pkcs11test() error {
 
 	slots, err := p.GetSlotList(true)
 	if err != nil {
-		return err
+		t.Fatal(err)
 	}
 
 	session, err := p.OpenSession(slots[0], pkcs11.CKF_SERIAL_SESSION|pkcs11.CKF_RW_SESSION)
 	if err != nil {
-		return err
+		t.Fatal(err)
 	}
 	defer func() {
 		_ = p.CloseSession(session)
 	}()
 
 	if err = p.Login(session, pkcs11.CKU_USER, "1234"); err != nil {
-		return err
+		t.Fatal(err)
 	}
 	defer func() {
 		_ = p.Logout(session)
@@ -41,7 +42,7 @@ func pkcs11test() error {
 
 	pub, priv, err := getRSA(p, session)
 	if err != nil {
-		return err
+		t.Fatal(err)
 	}
 
 	params := pkcs11.NewOAEPParams(
@@ -55,13 +56,13 @@ func pkcs11test() error {
 		pkcs11.NewMechanism(pkcs11.CKM_RSA_PKCS_OAEP, params),
 	}
 	if err := p.EncryptInit(session, mech, pub); err != nil {
-		return err
+		t.Fatal(err)
 	}
 
 	msg := "hi"
 	ct, err := p.Encrypt(session, []byte(msg))
 	if err != nil {
-		return err
+		t.Fatal(err)
 	}
 
 	fmt.Printf(
@@ -71,11 +72,11 @@ func pkcs11test() error {
 	)
 
 	if err := p.DecryptInit(session, mech, priv); err != nil {
-		return err
+		t.Fatal(err)
 	}
 	pt, err := p.Decrypt(session, ct)
 	if err != nil {
-		return err
+		t.Fatal(err)
 	}
 
 	fmt.Printf(
@@ -83,8 +84,6 @@ func pkcs11test() error {
 		base64.StdEncoding.EncodeToString(ct),
 		pt,
 	)
-
-	return nil
 }
 
 func getRSA(p *pkcs11.Ctx, sh pkcs11.SessionHandle) (pkcs11.ObjectHandle, pkcs11.ObjectHandle, error) {

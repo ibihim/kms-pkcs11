@@ -10,6 +10,12 @@ The goal is to **call a KMS-provider once** and spawn sub-keys. As every call to
 a KMS-provider generates costs. The costs could be monetary or by running into
 throttling.
 
+## Next
+
+1. Hook up KMS.
+2. Hook up PKCS #11.
+3. Hook up passphrase.
+
 ## Details
 
 ### Naming
