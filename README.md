@@ -30,7 +30,34 @@ The encrypted KEK is stored is stored, where configured.
 
 ### Encryption
 
-The encryption algorithm is AES, in GCM mode with a 128 bit key.
+The encryption algorithm is AES, in GCM mode with a 128 bit key. 128 bit key
+should be enough. Impossible is impossible. A good key hygiene is more improtant.
 
 The KEK rotates when necessary automatically to keep the data safe.
+
+## Usage
+
+```Go
+type EncryptedData struct {
+    Nonce []byte
+    EncryptedKey []byte
+    CipherText []byte
+}
+```
+
+### As library
+
+```Go
+func New(
+    // where to write KEK
+    store io.Writer,
+)
+```
+
+```Go
+// src is the file that gets encrypted. out is the encrypted blob.
+func (k KEK) Encrypt(src []byte) (out []byte, err error)
+// src is the file that gets decrypted. out is the encrypted blob.
+func (k KEK) Decrypt(src []byte) (out []byte, err error)
+```
 

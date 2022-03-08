@@ -4,8 +4,9 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
-	"github.com/miekg/pkcs11"
 	"os"
+
+	"github.com/miekg/pkcs11"
 )
 
 func main() {
@@ -15,6 +16,10 @@ func main() {
 }
 
 func app() error {
+	return nil
+}
+
+func pkcs11test() error {
 	p := pkcs11.New("/usr/local/lib/softhsm/libsofthsm2.so")
 	if err := p.Initialize(); err != nil {
 		panic(err)
