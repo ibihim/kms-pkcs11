@@ -96,7 +96,7 @@ func TestKEK(t *testing.T) {
 
 			msg := []byte("hello world")
 
-			ed, err := encryptKeyChain.Encrypt(msg, tt.aad())
+			ed, err := encryptKeyChain.EncryptWithAAD(msg, tt.aad())
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -106,7 +106,7 @@ func TestKEK(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			pt, err := decryptKeyChain.Decrypt(ed, tt.aad())
+			pt, err := decryptKeyChain.DecryptWithAAD(ed, tt.aad())
 			if (err != nil) != tt.expectedError {
 				t.Fatal(err)
 			}

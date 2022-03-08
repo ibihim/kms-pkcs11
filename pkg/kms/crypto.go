@@ -8,7 +8,11 @@ import (
 	"github.com/google/tink/go/keyset"
 )
 
-func (k *KeyChain) Encrypt(plaintext, additionalData []byte) ([]byte, error) {
+func (k *KeyChain) Encrypt(plaintext []byte) ([]byte, error) {
+	return k.EncryptWithAAD(plaintext, []byte{})
+}
+
+func (k *KeyChain) EncryptWithAAD(plaintext, additionalData []byte) ([]byte, error) {
 	if !k.validToUse() {
 		if err := k.Rotate(); err != nil {
 			return nil, err
@@ -52,7 +56,11 @@ func encryptPlaintext(plaintext, additionalData []byte) (*keyset.Handle, []byte,
 	return kh, ct, nil
 }
 
-func (k *KeyChain) Decrypt(encryptedData, additionalData []byte) ([]byte, error) {
+func (k *KeyChain) Decrypt(encryptedData []byte) ([]byte, error) {
+	return k.DecryptWithAAD(encryptedData, []byte{})
+}
+
+func (k *KeyChain) DecryptWithAAD(encryptedData, additionalData []byte) ([]byte, error) {
 	encDec, ct, err := decode(encryptedData)
 	if err != nil {
 		return nil, err
