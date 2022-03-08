@@ -1,4 +1,4 @@
-package pkcs11
+package pkcs11_test
 
 import (
 	"encoding/base64"
@@ -20,7 +20,7 @@ func TestPKCS11(t *testing.T) {
 		_ = p.Finalize()
 	}()
 
-	slots, err := p.GetSlotList(true)
+	slots, err := p.GetSlotList( /*tokenPresent:*/ true)
 	if err != nil {
 		t.Fatal(err)
 	}
