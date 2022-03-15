@@ -13,8 +13,7 @@ type KeyChain struct {
 	counter   uint32
 	rotateMtx sync.Mutex
 
-	kek  *keyset.Handle
-	deks map[string]*keyset.Handle
+	kek *keyset.Handle
 }
 
 func New() (*KeyChain, error) {
@@ -23,11 +22,8 @@ func New() (*KeyChain, error) {
 		return nil, err
 	}
 
-	deks := make(map[string]*keyset.Handle)
-
 	return &KeyChain{
-		kek:  kek,
-		deks: deks,
+		kek: kek,
 	}, nil
 }
 

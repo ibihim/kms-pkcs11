@@ -1,14 +1,24 @@
-# intermediate-kms
+# KMS-proxy
 
-Encrypts data with individual keys (128 bit) with AES GCM. The "main key" needs
-to be encrypted. The options should be a KMS-provider, a PKCS #11 HMS or a
-passphrase.
+Encrypts data with a key chain. The key chain is one or more AES-128bit keys.
+There is only one primary key, which is used for encryption. Depending on the
+prefix, older keys are used from the keychain. The key chain needs to be stored.
+
+This key chain can be used as a KMS-plugin. Instead of a KMS-provider an HMS can
+be used.
+
+There are different storage options:
+
+- store along every ciphertext and
+- store in "etcd".
 
 ## Why
 
-The goal is to **call a KMS-provider once** and spawn sub-keys. As every call to
-a KMS-provider generates costs. The costs could be monetary or by running into
-throttling.
+The goal is to **call a KMS-provider less often**. By adding an additional key-
+layer, the calls to a KMS-provider can be reduced by up to 2^21 calls.
+
+This can be highly beneficial, as every call to a KMS-provider generates costs.
+The costs could be monetary or temporary.
 
 ## Next
 
@@ -21,8 +31,8 @@ throttling.
 ### Naming
 
 - **root key** is an external key that encrypts the key chain
-- **key chain** is the combination of the **KEK** and a cache of **DEKs**
-- **KEK** is a set of keys with one set as primary.
+- **key chain** is a **KEK** and a counter that limits the usage to secure defaults
+- **KEK** is a set of keys with one key being the primary key.
 - **DEK** is a key used once for encryption of data.
 - **ciphertext** is data that got encrypted.
 - **encrypted data** is the ciphertext and the DEK.
