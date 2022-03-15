@@ -10,7 +10,6 @@ import (
 )
 
 type KeyChain struct {
-	// TODO put counter into AAD so no tinkering on it.
 	counter   uint32
 	rotateMtx sync.Mutex
 

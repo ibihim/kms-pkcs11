@@ -13,8 +13,8 @@ throttling.
 ## Next
 
 1. Hook up KMS.
-2. Hook up PKCS #11.
-3. Hook up passphrase.
+1. Hook up PKCS #11.
+1. Hook up passphrase.
 
 ## Details
 
@@ -45,19 +45,6 @@ The encrypted DEK is stored alongside the encrypted data and cached in memory.
 
 The encrypted KEK is stored is stored, where configured.
 
-### Encrypted data
-
-The encrypted data is a [gob](https://pkg.go.dev/encoding/gob) encoded like so:
-
-```Go
-type EncryptedData struct {
-  Ciphertext   []byte
-  EncryptedDEK []byte
-}
-```
-
-It is better then `[]byte` slicing.
-
 ### Encryption
 
 The encryption algorithm is AES, in GCM mode with a 128 bit key. 128 bit key
@@ -68,6 +55,7 @@ The KEK rotates when necessary automatically to keep the data safe.
 \* Until we have quantum-computing on the same level as we have
   non-quantum-computing. As it can compute like 
   [the key size would be cut in half](https://en.wikipedia.org/wiki/Grover%27s_algorithm#Cryptography).
+
 ## Usage
 
 Start anew:
