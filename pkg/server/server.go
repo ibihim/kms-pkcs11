@@ -20,8 +20,13 @@ func Run(address string) error {
 	}
 	defer listen.Close()
 
+	server, err := New()
+	if err != nil {
+		return err
+	}
+
 	grpcServer := grpc.NewServer()
-	api.RegisterKeyManagementServiceServer(grpcServer, &server{})
+	api.RegisterKeyManagementServiceServer(grpcServer, server)
 
 	return grpcServer.Serve(listen)
 }

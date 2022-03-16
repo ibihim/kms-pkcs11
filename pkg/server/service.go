@@ -15,7 +15,7 @@ type server struct {
 	store io.Writer
 }
 
-func New(store io.Writer) (*server, error) {
+func New() (*server, error) {
 	kek, err := kms.New()
 	if err != nil {
 		return nil, err
