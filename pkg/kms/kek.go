@@ -34,7 +34,7 @@ func New() (*KeyChain, error) {
 	}, nil
 }
 
-func ReadKEK(rootKey tink.AEAD, encKek []byte) (*keyset.Handle, error) {
+func ReadKEK(rootKey tink.AEAD, encKek []byte) (*KeyChain, error) {
 	buf := bytes.NewBuffer(encKek)
 	br := keyset.NewBinaryReader(buf)
 
@@ -43,7 +43,7 @@ func ReadKEK(rootKey tink.AEAD, encKek []byte) (*keyset.Handle, error) {
 		return nil, err
 	}
 
-	return kek, nil
+	return &KeyChain{kek: kek}, nil
 }
 
 func (k *KeyChain) WriteKEK(rootKey tink.AEAD) ([]byte, error) {
