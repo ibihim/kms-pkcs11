@@ -4,7 +4,7 @@ import (
 	"context"
 	"io"
 
-	api "k8s.io/apiserver/pkg/storage/value/encrypt/envelope/v1beta1"
+	api "github.com/ibihim/kms-proxy/pkg/api/v1beta1"
 
 	"github.com/ibihim/kms-proxy/pkg/kms"
 )

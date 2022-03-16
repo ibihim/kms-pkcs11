@@ -1,11 +1,13 @@
 package kms
 
 import (
+	"bytes"
 	"sync"
 	"sync/atomic"
 
 	"github.com/google/tink/go/aead"
 	"github.com/google/tink/go/keyset"
+	"github.com/google/tink/go/tink"
 )
 
 const (
@@ -30,6 +32,29 @@ func New() (*KeyChain, error) {
 	return &KeyChain{
 		kek: kek,
 	}, nil
+}
+
+func ReadKEK(rootKey tink.AEAD, encKek []byte) (*keyset.Handle, error) {
+	buf := bytes.NewBuffer(encKek)
+	br := keyset.NewBinaryReader(buf)
+
+	kek, err := keyset.Read(br, rootKey)
+	if err != nil {
+		return nil, err
+	}
+
+	return kek, nil
+}
+
+func (k *KeyChain) WriteKEK(rootKey tink.AEAD) ([]byte, error) {
+	var buf bytes.Buffer
+	bw := keyset.NewBinaryWriter(&buf)
+
+	if err := k.kek.Write(bw, rootKey); err != nil {
+		return nil, err
+	}
+
+	return buf.Bytes(), nil
 }
 
 func (k *KeyChain) incrementUsageCounter() {
